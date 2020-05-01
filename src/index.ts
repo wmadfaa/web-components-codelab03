@@ -1,4 +1,5 @@
 import { LitElement, html, property, customElement } from "lit-element";
+import "https://unpkg.com/@material/mwc-button?module";
 
 const API = "https://api.openbrewerydb.org/breweries";
 
@@ -18,9 +19,9 @@ export class BreweryDetail extends LitElement {
       <h3>${this.name} (${this.visited ? "visited" : "not-visited"})</h3>
       <p>brewery type: ${this.type}</p>
       <p>city: ${this.city}</p>
-      <button type="button" @click="${this._toggleVisitedStatus}">
+      <mwc-button type="button" @click="${this._toggleVisitedStatus}">
         ${this.visited ? "visited" : "not-visited"}
-      </button>
+      </mwc-button>
     `;
   }
 
@@ -94,9 +95,11 @@ export default class MyElement extends LitElement {
       <h2>Breweries</h2>
       <p>(${totalVisited} visited and ${totalNotVisited} still to go)</p>
 
-      <button @click=${this._filterNone}>Filter none</button>
-      <button @click=${this._filterVisited}>Filter visited</button>
-      <button @click=${this._filterNotVisited}>Filter not-visited</button>
+      <mwc-button @click=${this._filterNone}>Filter none</mwc-button>
+      <mwc-button @click=${this._filterVisited}>Filter visited</mwc-button>
+      <mwc-button @click=${this._filterNotVisited}
+        >Filter not-visited</mwc-button
+      >
 
       <ul>
         ${breweries.map(
