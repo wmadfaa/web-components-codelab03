@@ -11,7 +11,7 @@ export class BreweryDetail extends LitElement {
   @property({ type: String })
   city: string;
   @property({ type: Boolean })
-  visited: boolean = false;
+  visited: boolean;
 
   render() {
     return html`
@@ -25,7 +25,7 @@ export class BreweryDetail extends LitElement {
   }
 
   _toggleVisitedStatus() {
-    this.visited = !this.visited;
+    this.dispatchEvent(new CustomEvent("toggle-brewery-visited"));
   }
 }
 
@@ -54,13 +54,26 @@ export default class MyElement extends LitElement {
     this.loading = false;
   }
 
+  toggleBreweryVisited(breweryToUpdate) {
+    this.breweries = this.breweries.map((brewery) => {
+      if (brewery !== breweryToUpdate) {
+        return brewery;
+      }
+      return { ...breweryToUpdate, visited: !breweryToUpdate.visited };
+    });
+  }
+
   render() {
     if (this.loading) return html`<p>loading...</p>`;
+
+    const totalVisited = this.breweries.filter((b) => b.visited).length;
+    const totalNotVisited = this.breweries.length - totalVisited;
+
     return html`
       <h1>Breweries App</h1>
 
       <h2>Breweries</h2>
-
+      <p>(${totalVisited} visited and ${totalNotVisited} still to go)</p>
       <ul>
         ${this.breweries.map(
           (brewery) =>
@@ -69,6 +82,9 @@ export default class MyElement extends LitElement {
                 .name="${brewery.name}"
                 .type="${brewery.brewery_type}"
                 .city="${brewery.city}"
+                .visited="${brewery.visited}"
+                @toggle-brewery-visited="${() =>
+                  this.toggleBreweryVisited(brewery)}"
               ></brewery-detail>
             </li> `
         )}
