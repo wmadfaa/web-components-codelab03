@@ -10,13 +10,22 @@ export class BreweryDetail extends LitElement {
   type: string;
   @property({ type: String })
   city: string;
+  @property({ type: Boolean })
+  visited: boolean = false;
 
   render() {
     return html`
-      <h3>${this.name}</h3>
+      <h3>${this.name} (${this.visited ? "visited" : "not-visited"})</h3>
       <p>brewery type: ${this.type}</p>
       <p>city: ${this.city}</p>
+      <button type="button" @click="${this._toggleVisitedStatus}">
+        ${this.visited ? "visited" : "not-visited"}
+      </button>
     `;
+  }
+
+  _toggleVisitedStatus() {
+    this.visited = !this.visited;
   }
 }
 
