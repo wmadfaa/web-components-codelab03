@@ -1,55 +1,27 @@
-import { LitElement, html, css } from "lit-element";
+import { LitElement, html, property, customElement } from "lit-element";
 
-export default class MyCounter extends LitElement {
-  count = 0;
+const API = "https://api.openbrewerydb.org/breweries";
 
-  static properties = {
-    count: { type: Number }
-  };
+@customElement("my-element")
+export default class MyElement extends LitElement {
+  @property({ type: Array })
+  breweries = [];
 
-  constructor() {
-    super();
-    this.count = 0;
+  connectedCallback() {
+    super.connectedCallback();
+
+    if (!this.breweries.length) {
+      this._fetchBreweries();
+    }
   }
 
-  static get styles() {
-    return css`
-      * {
-        font-size: 200%;
-      }
-
-      span {
-        width: 4rem;
-        display: inline-block;
-        text-align: center;
-      }
-
-      button {
-        width: 4rem;
-        height: 4rem;
-        border: none;
-        border-radius: 10px;
-        background-color: seagreen;
-        color: white;
-      }
-    `;
-  }
-
-  inc() {
-    this.count++;
-  }
-
-  dec() {
-    this.count--;
+  async _fetchBreweries() {
+    const res = await fetch(API);
+    const jsonRes = await res.json();
+    this.breweries = jsonRes;
   }
 
   render() {
-    return html`
-      <button @click="${this.dec}">-</button>
-      <span>${this.count}</span>
-      <button @click="${this.inc}">+</button>
-    `;
+    return html` <pre>${JSON.stringify(this.breweries, null, 2)}</pre> `;
   }
 }
-
-customElements.define("my-counter", MyCounter);
