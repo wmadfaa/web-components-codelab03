@@ -37,6 +37,9 @@ export default class MyElement extends LitElement {
   @property({ type: Boolean })
   loading = true;
 
+  @property({ type: String })
+  filter: string;
+
   connectedCallback() {
     super.connectedCallback();
 
@@ -63,19 +66,40 @@ export default class MyElement extends LitElement {
     });
   }
 
+  _filterNone() {
+    this.filter = "all";
+  }
+  _filterVisited() {
+    this.filter = "visited";
+  }
+  _filterNotVisited() {
+    this.filter = "notVisited";
+  }
+
   render() {
     if (this.loading) return html`<p>loading...</p>`;
 
     const totalVisited = this.breweries.filter((b) => b.visited).length;
     const totalNotVisited = this.breweries.length - totalVisited;
 
+    const breweries = this.breweries.filter((brewery) => {
+      if (this.filter === "visited") return brewery.visited;
+      if (this.filter === "notVisited") return !brewery.visited;
+      return brewery;
+    });
+
     return html`
       <h1>Breweries App</h1>
 
       <h2>Breweries</h2>
       <p>(${totalVisited} visited and ${totalNotVisited} still to go)</p>
+
+      <button @click=${this._filterNone}>Filter none</button>
+      <button @click=${this._filterVisited}>Filter visited</button>
+      <button @click=${this._filterNotVisited}>Filter not-visited</button>
+
       <ul>
-        ${this.breweries.map(
+        ${breweries.map(
           (brewery) =>
             html`<li>
               <brewery-detail
