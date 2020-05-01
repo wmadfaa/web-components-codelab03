@@ -2,10 +2,28 @@ import { LitElement, html, property, customElement } from "lit-element";
 
 const API = "https://api.openbrewerydb.org/breweries";
 
+@customElement("brewery-detail")
+export class BreweryDetail extends LitElement {
+  @property({ type: String })
+  name: string;
+  @property({ type: String })
+  type: string;
+  @property({ type: String })
+  city: string;
+
+  render() {
+    return html`
+      <h3>${this.name}</h3>
+      <p>brewery type: ${this.type}</p>
+      <p>city: ${this.city}</p>
+    `;
+  }
+}
+
 @customElement("my-element")
 export default class MyElement extends LitElement {
   @property({ type: Array })
-  breweries = [];
+  breweries: any[];
 
   @property({ type: Boolean })
   loading = true;
@@ -13,7 +31,7 @@ export default class MyElement extends LitElement {
   connectedCallback() {
     super.connectedCallback();
 
-    if (!this.breweries.length) {
+    if (!this.breweries) {
       this._fetchBreweries();
     }
   }
@@ -29,6 +47,23 @@ export default class MyElement extends LitElement {
 
   render() {
     if (this.loading) return html`<p>loading...</p>`;
-    return html` <pre>${JSON.stringify(this.breweries, null, 2)}</pre> `;
+    return html`
+      <h1>Breweries App</h1>
+
+      <h2>Breweries</h2>
+
+      <ul>
+        ${this.breweries.map(
+          (brewery) =>
+            html`<li>
+              <brewery-detail
+                .name="${brewery.name}"
+                .type="${brewery.brewery_type}"
+                .city="${brewery.city}"
+              ></brewery-detail>
+            </li> `
+        )}
+      </ul>
+    `;
   }
 }
